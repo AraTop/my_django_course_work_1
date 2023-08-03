@@ -1,0 +1,28 @@
+{% extends 'service/base.html' %} 
+{% block content %} 
+<form method="POST" enctype="multipart/form-data">
+   {% csrf_token %}
+   <div class="form-group has-success">
+     <label class="control-label" for="inputSuccess1">Тема письма</label>
+     <input type="name" name="letter_subject" class="form-control" id="inputSuccess1">
+   </div>
+   <div class="form-group has-error">
+     <label class="control-label" for="inputError1">Тело письма</label>
+     <input type="text" name="letter_body" class="form-control" id="inputError1">
+   </div>
+   <div class="form-group has-success">
+      <label class="required" for="id_client">Настройки:</label>
+      <div class="related-widget-wrapper" data-model-ref="Клиент сервиса">
+          <select name="settings" required="" id="id_client">
+              <option value="" selected>----------------------------------------------------</option>
+              {% for obj in objects %}
+                  <option value="{{ obj.pk }}">{{ obj }}</option>
+              {% endfor %}
+          </select>
+      </div>
+  </div>
+   <div class="form-group has-error">
+      <label class="control-label" for="inputError1"></label>
+      <input type="submit" class="btn btn-primary" id="inputError1">
+ </form>
+{% endblock %} 

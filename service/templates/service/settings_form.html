@@ -1,0 +1,44 @@
+{% extends 'service/base.html' %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group has-success">
+        <label class="control-label" for="inputSuccess1">Время рассылки</label>
+        <input type="time" name="mailing_time" class="form-control" id="inputSuccess1">
+    </div>
+
+    <label class="control-label" for="periodicitySelect">Выберите Периодичность</label>
+    <select id="periodicitySelect" name="periodicity">
+        <option>раз в день</option>
+        <option>раз в неделю</option>
+        <option>раз в месяц</option>
+    </select>
+
+    <br>
+
+    <label class="control-label" for="statusSelect">Cтатус рассылки</label>
+    <select id="statusSelect" name="mailing_status">
+        <option>завершена</option>
+        <option>создана</option>
+        <option>запущена</option>
+    </select>
+
+    <div class="form-group has-success">
+        <label class="required" for="id_client">Клиент:</label>
+        <div class="related-widget-wrapper" data-model-ref="Клиент сервиса">
+            <select name="client" required="" id="id_client">
+                <option value="" selected>----------------------------------------------------</option>
+                {% for obj in objects %}
+                    <option value="{{ obj.pk }}">{{ obj }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group has-error">
+        <label class="control-label" for="inputError1"></label>
+        <input type="submit" class="btn btn-primary" value="Создать настройки">
+    </div>
+</form>
+{% endblock %}
