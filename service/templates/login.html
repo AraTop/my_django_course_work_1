@@ -19,17 +19,17 @@
   </head>
 
   <body class="text-center">
-    <form class="form-signin" method="POST">
+    <form class="form-signin" method="POST" action="{% url 'login' %}">
+      {% if error %}
+    <p>{{ error }}</p>
+    {% endif %}
       {% csrf_token %}
-      <h1 class="h3 mb-3 font-weight-normal">Пожалуйста зарегистрируйтесь</h1>
-      
-         <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Почта" required autofocus>
-         <input type="password" name="password"  id="inputPassword" class="form-control" placeholder="Пароль" required>
-         <input type="name" name="last_name"  class="form-control" placeholder="Имя" required autofocus>
-         <input type="name" name="first_name" class="form-control" placeholder="Фамилия" required>   
+      <h1 class="h3 mb-3 font-weight-normal">Пожалуйста войдите</h1>
+         <input type="email" name="email" id="id_email" class="form-control" placeholder="Почта" required autofocus>
+         <input type="password" name="password"  id="id_password" class="form-control" placeholder="Пароль" required>
       <div class="checkbox mb-3">
         <label>
-            уже есть аккаунт? <a href="{% url 'login' %}">Войдите</a>
+            Нет аккаунта? <a href="/service/create/">Зарегистрируйтесь</a>
         </label>
       </div>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Отправить</button>

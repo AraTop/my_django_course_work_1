@@ -2,3 +2,4 @@ django
 requests
 psycopg2
 djangorestframework
+djangorestframework-simplejwt

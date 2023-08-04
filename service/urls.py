@@ -4,8 +4,8 @@ from service import views
 app_name = 'service'
 
 urlpatterns = [
-   path("", views.CustomerListView.as_view()),
-   path("create/", views.CustomerCreateView.as_view()),
+   path("", views.CustomerListView.as_view(), name='home'),
+   path("create/", views.CustomerCreateView.as_view(), name='register'),
    path("delete/<int:pk>/", views.CustomerDeleteView.as_view()),
    path("update/<int:pk>/", views.CustomerUpdateView.as_view()),
    path("<int:pk>/", views.CustomerDetailView.as_view(), name='service'),
@@ -24,4 +24,6 @@ urlpatterns = [
    path("logs/delete/<int:pk>/", views.Mailing_LogsDeleteView.as_view()),
    path("logs/update/<int:pk>/", views.Mailing_LogsUpdateView.as_view()),
    path("logs/<int:pk>/", views.Mailing_LogsDetailView.as_view(), name='logs'),
+   path('api/token/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+   path('api/token/refresh/', views.MyTokenRefreshView.as_view(), name='token_refresh'),
 ]

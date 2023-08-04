@@ -3,7 +3,7 @@ from service.models import Customer_Service, Settings, Message_to_Send, Mailing_
 
 @admin.register(Customer_Service)
 class Customer_ServiceAdmin(admin.ModelAdmin):
-   list_display = ('email', 'last_name','first_name','surname','comment')
+   list_display = ('email', 'last_name', 'first_name', 'surname', 'comment', 'access_token', 'refresh_token')
 
 @admin.register(Settings)
 class SettingsAdmin(admin.ModelAdmin):
