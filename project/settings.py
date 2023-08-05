@@ -53,8 +53,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'service.middleware.UniqueSessionMiddleware',
     
 ]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db' 
 
 ROOT_URLCONF = 'project.urls'
 
@@ -116,6 +120,8 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(days=7),
     'SLIDING_TOKEN_REFRESH_DELTA': timedelta(days=6),
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_COOKIE': 'access_token', 
+    'AUTH_COOKIE_HTTP_ONLY': True
 }
 
 REST_FRAMEWORK = {
@@ -124,9 +130,12 @@ REST_FRAMEWORK = {
     ),
 }
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = '/service/'
+
+LOGIN_URL = '/accounts/login/'
 
 AUTHENTICATION_BACKENDS = [
+    'service.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 

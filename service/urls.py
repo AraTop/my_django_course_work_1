@@ -24,6 +24,4 @@ urlpatterns = [
    path("logs/delete/<int:pk>/", views.Mailing_LogsDeleteView.as_view()),
    path("logs/update/<int:pk>/", views.Mailing_LogsUpdateView.as_view()),
    path("logs/<int:pk>/", views.Mailing_LogsDetailView.as_view(), name='logs'),
-   path('api/token/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
-   path('api/token/refresh/', views.MyTokenRefreshView.as_view(), name='token_refresh'),
 ]

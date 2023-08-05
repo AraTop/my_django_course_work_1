@@ -1,6 +1,8 @@
+from datetime import datetime, timedelta
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
-import requests
+from django.contrib.auth.mixins import LoginRequiredMixin
 from service.models import Customer_Service, Settings, Message_to_Send, Mailing_Logs 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -8,12 +10,19 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
+from django.utils.decorators import method_decorator
 
 class CustomerCreateView(CreateView):
    model = Customer_Service
-   fields = ('email', 'last_name', 'first_name', 'surname', 'comment')
+   fields = ('email', 'last_name', 'first_name', 'surname', 'comment', 'password')
    success_url = '/accounts/login/'
 
+   def form_valid(self, form):
+      user = form.save(commit=False)
+      user.set_password(form.cleaned_data['password'])
+      user.save()
+      return super().form_valid(form)
+   
 class CustomerDeleteView(DeleteView):
    model = Customer_Service
    success_url = '/service' 
@@ -26,15 +35,21 @@ class CustomerDetailView(DetailView):
    
 class CustomerUpdateView(UpdateView):
    model = Customer_Service
-   fields = ('email', 'last_name', 'first_name', 'surname', 'comment')
+   fields = ('email', 'last_name', 'first_name', 'surname', 'comment', 'password')
    success_url = '/service'
+
+   def form_valid(self, form):
+      user = form.save(commit=False)
+      user.set_password(form.cleaned_data['password'])
+      user.save()
+      return super().form_valid(form)
 
    def get_success_url(self):
       return reverse('service:service', args=[self.kwargs.get('pk')])
    
 #---------------------------------------------------------------------------
 
-class SettingsCreateView(CreateView):
+class SettingsCreateView(LoginRequiredMixin, CreateView):
    model = Settings
    fields = ('mailing_time', 'periodicity', 'mailing_status', 'client')
    success_url = '/service/settings/'
@@ -101,7 +116,7 @@ class Message_to_SendUpdateView(UpdateView):
       return context
    
 #--------------------------------------------------------------
-
+@method_decorator(login_required, name='dispatch')
 class Mailing_LogsCreateView(CreateView):
    model = Mailing_Logs
    fields = ('date_and_time_of_last_attempt', 'attempt_status', 'mail_server_response', 'settings')
@@ -134,42 +149,6 @@ class Mailing_LogsUpdateView(UpdateView):
       context['objects'] = settings_objects
       return context
 
-#---------------------------------------------------------------
-
-class MyTokenObtainPairView(TokenObtainPairView):
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        
-        if response.status_code == 200:
-            user = self.user
-            refresh = self.token
-            access = refresh.access_token
-
-            # Сохраняем токены в модели Customer_Service
-            try:
-                customer = Customer_Service.objects.get(email=user.email)
-                customer.access_token = str(access)
-                customer.refresh_token = str(refresh)
-                customer.save()
-            except Customer_Service.DoesNotExist:
-                Customer_Service.objects.create(
-                    email=user.email,
-                    last_name=user.last_name,
-                    first_name=user.first_name,
-                    access_token=str(access),
-                    refresh_token=str(refresh),
-                )
-
-            response.data['email'] = user.email
-            response.data['name'] = user.first_name  
-            response.data['access_token'] = str(access)
-            response.data['refresh_token'] = str(refresh)
-
-        return response
-
-class MyTokenRefreshView(TokenRefreshView):
-    pass
-
 #--------------------------------------------------------------
 
 def login_view(request):
@@ -179,11 +158,23 @@ def login_view(request):
         user = authenticate(email=email, password=password)
         if user is not None:
             login(request, user)
-            return redirect('service:home')
+
+            refresh = RefreshToken.for_user(user)
+            access = str(refresh.access_token)
+ 
+            response = redirect('/service/')
+            response.set_cookie('access_token', access, httponly=True)
+            response.set_cookie('refresh_token', str(refresh), httponly=True)
+            return response
         else:
             return render(request, 'login.html', {'error': 'Invalid credentials.'})
     return render(request, 'login.html')
 
+@login_required
 def logout_view(request):
    logout(request)
-   return redirect('login')
+      
+   response = JsonResponse({"message": "Logout completed successfully"})
+   response.delete_cookie('access_token')
+   response.delete_cookie('refresh_token')
+   return response

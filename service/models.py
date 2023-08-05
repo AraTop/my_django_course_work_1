@@ -32,9 +32,6 @@ class Customer_Service(AbstractBaseUser, PermissionsMixin):
     comment = models.TextField(verbose_name='Комментарий', **NULLABLE)
     password = models.CharField(max_length=128, default='')
 
-    access_token = models.CharField(max_length=255, **NULLABLE)
-    refresh_token = models.CharField(max_length=255, **NULLABLE)
-
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
