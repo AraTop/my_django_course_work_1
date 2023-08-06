@@ -53,8 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
-]
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db' 
 
@@ -77,7 +77,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'project.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -112,33 +111,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
-    'SLIDING_TOKEN_LIFETIME': timedelta(days=7),
-    'SLIDING_TOKEN_REFRESH_DELTA': timedelta(days=6),
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_COOKIE': 'access_token', 
-    'AUTH_COOKIE_HTTP_ONLY': True
-}
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-}
-
 LOGIN_REDIRECT_URL = '/service/'
 
 LOGIN_URL = '/accounts/login/' 
 
 AUTHENTICATION_BACKENDS = [
-    'service.backends.EmailBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    'service.backends.EmailBackend'
 ]
 
 # Internationalization
