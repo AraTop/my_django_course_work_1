@@ -7,16 +7,33 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Sky</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-
+    
     <!-- Custom styles for this template -->
     <link href="{% static 'css/album.css' %}" rel="stylesheet">
   </head>
 
   <body>
+    <script>
+      // Получаем токен из куки
+      var token = getCookie('access_token');
 
+      // Добавляем заголовок "Authorization" к каждому запросу
+      $(document).ajaxSend(function(event, xhr, settings) {
+          xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+      });
+
+      // Функция для получения значения куки
+      function getCookie(name) {
+          var value = "; " + document.cookie;
+          var parts = value.split("; " + name + "=");
+          if (parts.length == 2) return parts.pop().split(";").shift();
+      }
+  </script>
+  
     <header>
       <div class="collapse bg-dark" id="navbarHeader">
         <div class="container">

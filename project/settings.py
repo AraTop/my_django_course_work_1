@@ -53,8 +53,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'service.middleware.UniqueSessionMiddleware',
     
 ]
 
@@ -128,11 +126,15 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 LOGIN_REDIRECT_URL = '/service/'
 
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/accounts/login/' 
 
 AUTHENTICATION_BACKENDS = [
     'service.backends.EmailBackend',

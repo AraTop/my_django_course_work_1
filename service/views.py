@@ -5,10 +5,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from service.models import Customer_Service, Settings, Message_to_Send, Mailing_Logs 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from django.utils.decorators import method_decorator
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 class CustomerCreateView(CreateView):
    model = Customer_Service
@@ -21,21 +21,32 @@ class CustomerCreateView(CreateView):
       user.save()
       return super().form_valid(form)
 
-@method_decorator(login_required, name='dispatch')
-class CustomerDeleteView(DeleteView):
+class CustomerDeleteView(LoginRequiredMixin, DeleteView):
    model = Customer_Service
    success_url = '/service' 
 
-@method_decorator(login_required, name='dispatch')
-class CustomerListView(ListView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+
+class CustomerListView(LoginRequiredMixin, ListView):
    model = Customer_Service
 
-@method_decorator(login_required, name='dispatch')
-class CustomerDetailView(DetailView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+
+class CustomerDetailView(LoginRequiredMixin, DetailView):
    model = Customer_Service
    
-@method_decorator(login_required, name='dispatch')
-class CustomerUpdateView(UpdateView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+
+class CustomerUpdateView(LoginRequiredMixin, UpdateView):
    model = Customer_Service
    fields = ('email', 'last_name', 'first_name', 'surname', 'comment', 'password')
    success_url = '/service'
@@ -49,8 +60,12 @@ class CustomerUpdateView(UpdateView):
    def get_success_url(self):
       return reverse('service:service', args=[self.kwargs.get('pk')])
    
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
 #---------------------------------------------------------------------------
-@method_decorator(login_required, name='dispatch')
+
 class SettingsCreateView(LoginRequiredMixin, CreateView):
    model = Settings
    fields = ('mailing_time', 'periodicity', 'mailing_status', 'client')
@@ -62,21 +77,37 @@ class SettingsCreateView(LoginRequiredMixin, CreateView):
       context['objects'] = settings_objects
       return context
 
-@method_decorator(login_required, name='dispatch')
-class SettingsDeleteView(DeleteView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+
+class SettingsDeleteView(LoginRequiredMixin, DeleteView):
    model = Settings
    success_url = '/service/settings/' 
 
-@method_decorator(login_required, name='dispatch')
-class SettingsListView(ListView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+   
+class SettingsListView(LoginRequiredMixin, ListView):
    model = Settings
 
-@method_decorator(login_required, name='dispatch')
-class SettingsDetailView(DetailView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+
+class SettingsDetailView(LoginRequiredMixin, DetailView):
    model = Settings
 
-@method_decorator(login_required, name='dispatch')   
-class SettingsUpdateView(UpdateView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+
+class SettingsUpdateView(LoginRequiredMixin, UpdateView):
    model = Settings
    fields = ('mailing_time', 'periodicity', 'mailing_status', 'client')
    success_url = '/service/settings/'
@@ -87,9 +118,13 @@ class SettingsUpdateView(UpdateView):
       context['objects'] = settings_objects
       return context
    
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
 #--------------------------------------------------------------
-@method_decorator(login_required, name='dispatch')
-class Message_to_SendCreateView(CreateView):
+
+class Message_to_SendCreateView(LoginRequiredMixin, CreateView):
    model = Message_to_Send
    fields = ('letter_subject', 'letter_body', 'settings')
    success_url = '/service/message/'
@@ -100,21 +135,38 @@ class Message_to_SendCreateView(CreateView):
       context['objects'] = settings_objects
       return context
 
-@method_decorator(login_required, name='dispatch')
-class Message_to_SendDeleteView(DeleteView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+   
+class Message_to_SendDeleteView(LoginRequiredMixin, DeleteView):
    model = Message_to_Send
    success_url = '/service/message/' 
 
-@method_decorator(login_required, name='dispatch')
-class Message_to_SendListView(ListView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+
+class Message_to_SendListView(LoginRequiredMixin, ListView):
    model = Message_to_Send
 
-@method_decorator(login_required, name='dispatch')
-class Message_to_SendDetailView(DetailView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+   
+class Message_to_SendDetailView(LoginRequiredMixin, DetailView):
    model = Message_to_Send
    
-@method_decorator(login_required, name='dispatch')
-class Message_to_SendUpdateView(UpdateView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+   
+
+class Message_to_SendUpdateView(LoginRequiredMixin, UpdateView):
    model = Message_to_Send
    fields = ('letter_subject', 'letter_body', 'settings')
    success_url = '/service/message/'
@@ -125,9 +177,15 @@ class Message_to_SendUpdateView(UpdateView):
       context['objects'] = settings_objects
       return context
    
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+   
 #--------------------------------------------------------------
-@method_decorator(login_required, name='dispatch')
-class Mailing_LogsCreateView(CreateView):
+
+class Mailing_LogsCreateView(LoginRequiredMixin, CreateView):
+   permission_classes = [IsAuthenticated]
    model = Mailing_Logs
    fields = ('date_and_time_of_last_attempt', 'attempt_status', 'mail_server_response', 'settings')
    success_url = '/service/logs/'
@@ -138,21 +196,42 @@ class Mailing_LogsCreateView(CreateView):
       context['objects'] = settings_objects
       return context
    
-@method_decorator(login_required, name='dispatch')
-class Mailing_LogsDeleteView(DeleteView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+   
+class Mailing_LogsDeleteView(LoginRequiredMixin, DeleteView):
+   permission_classes = [IsAuthenticated]
    model = Mailing_Logs
    success_url = '/service/logs/' 
 
-@method_decorator(login_required, name='dispatch')
-class Mailing_LogsListView(ListView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+   
+class Mailing_LogsListView(LoginRequiredMixin, ListView):
+   permission_classes = [IsAuthenticated]
    model = Mailing_Logs
 
-@method_decorator(login_required, name='dispatch')
-class Mailing_LogsDetailView(DetailView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+   
+class Mailing_LogsDetailView(LoginRequiredMixin, DetailView):
+   permission_classes = [IsAuthenticated]
    model = Mailing_Logs
    
-@method_decorator(login_required, name='dispatch')
-class Mailing_LogsUpdateView(UpdateView):
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
+   
+class Mailing_LogsUpdateView(LoginRequiredMixin, UpdateView):
+   permission_classes = [IsAuthenticated]
+
    model = Mailing_Logs
    fields = ('date_and_time_of_last_attempt', 'attempt_status', 'mail_server_response', 'settings')
    success_url = '/service/logs/'
@@ -163,6 +242,10 @@ class Mailing_LogsUpdateView(UpdateView):
       context['objects'] = settings_objects
       return context
 
+   def dispatch(self, request, *args, **kwargs):
+      if not request.user.is_authenticated:
+         return self.handle_no_permission()
+      return super().dispatch(request, *args, **kwargs)
 #--------------------------------------------------------------
 
 def login_view(request):
@@ -171,12 +254,12 @@ def login_view(request):
         password = request.POST['password']
         user = authenticate(email=email, password=password)
         if user is not None:
-            login(request, user)
 
             refresh = RefreshToken.for_user(user)
             access = str(refresh.access_token)
- 
+
             response = redirect('/service/')
+            response['Authorization'] = f'Bearer {access}'
             response.set_cookie('access_token', access, httponly=True)
             response.set_cookie('refresh_token', str(refresh), httponly=True)
             return response
@@ -184,10 +267,9 @@ def login_view(request):
             return render(request, 'login.html', {'error': 'Invalid credentials.'})
     return render(request, 'login.html')
 
-@login_required
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def logout_view(request):
-   logout(request)
-      
    response = JsonResponse({"message": "Logout completed successfully"})
    response.delete_cookie('access_token')
    response.delete_cookie('refresh_token')
