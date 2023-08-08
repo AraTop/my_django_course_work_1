@@ -41,8 +41,6 @@ INSTALLED_APPS = [
 
     "service",
 
-    'rest_framework',
-    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +55,7 @@ MIDDLEWARE = [
     ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db' 
+SESSION_COOKIE_AGE = 604800
 
 ROOT_URLCONF = 'project.urls'
 
@@ -116,6 +115,7 @@ LOGIN_REDIRECT_URL = '/service/'
 LOGIN_URL = '/accounts/login/' 
 
 AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
     'service.backends.EmailBackend'
 ]
 

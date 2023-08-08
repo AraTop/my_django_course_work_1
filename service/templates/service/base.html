@@ -17,22 +17,6 @@
   </head>
 
   <body>
-    <script>
-      // Получаем токен из куки
-      var token = getCookie('access_token');
-
-      // Добавляем заголовок "Authorization" к каждому запросу
-      $(document).ajaxSend(function(event, xhr, settings) {
-          xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-      });
-
-      // Функция для получения значения куки
-      function getCookie(name) {
-          var value = "; " + document.cookie;
-          var parts = value.split("; " + name + "=");
-          if (parts.length == 2) return parts.pop().split(";").shift();
-      }
-  </script>
   
     <header>
       <div class="collapse bg-dark" id="navbarHeader">
@@ -45,7 +29,21 @@
             <div class="col-sm-4 offset-md-1 py-4">
               <h4 class="text-white">Contact</h4>
               <ul class="list-unstyled">
-                <li><a href="http://127.0.0.1:8000/service/create" class="text-white">Войдите или зарегистрируйтесь</a></li>
+                {% if user.is_authenticated %}
+                  <li>
+                    <details><summary class="text-white">Профиль</summary>
+                      <a  class="text-white" href="http://127.0.0.1:8000/service/">Открыть профиль</a>
+                      <br>
+                      <a class="text-white" href="http://127.0.0.1:8000/accounts/logout/">Выйти</a>
+                    </details>
+                  </li> 
+                {% else %}
+                  <li>
+                    <details><summary class="text-white">Здравствуй, гость</summary>
+                      <a  class="text-white" href="http://127.0.0.1:8000/accounts/login/">Войти</a>, <a class="text-white" href="http://127.0.0.1:8000/service/create">Зарегистрироватся</a>
+                    </details>
+                  </li>   
+                {% endif %}
                 <li><a href="http://127.0.0.1:8000/service/settings/" class="text-white">Настройка рассылки</a></li>
                 <li><a href="http://127.0.0.1:8000/service/message/" class="text-white">Сообщения</a></li>
                 <li><a href="http://127.0.0.1:8000/service/logs/" class="text-white">Логи</a></li>

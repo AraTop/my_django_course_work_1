@@ -19,10 +19,11 @@ class CustomerCreateView(CreateView):
       user.save()
       return super().form_valid(form)
 
+#@method_decorator(login_required, name='dispatch')
 class CustomerDeleteView(DeleteView):
-   
    model = Customer_Service
    success_url = '/service' 
+
 
 class CustomerListView(ListView):
    model = Customer_Service
@@ -31,6 +32,7 @@ class CustomerListView(ListView):
 class CustomerDetailView(DetailView):
    model = Customer_Service
 
+@method_decorator(login_required, name='dispatch')
 class CustomerUpdateView(UpdateView):
    model = Customer_Service
    fields = ('email', 'last_name', 'first_name', 'surname', 'comment', 'password')
@@ -46,7 +48,7 @@ class CustomerUpdateView(UpdateView):
       return reverse('service:service', args=[self.kwargs.get('pk')])
    
 #---------------------------------------------------------------------------
-
+@method_decorator(login_required, name='dispatch')
 class SettingsCreateView(CreateView):
    model = Settings
    fields = ('mailing_time', 'periodicity', 'mailing_status', 'client')
@@ -58,16 +60,20 @@ class SettingsCreateView(CreateView):
       context['objects'] = settings_objects
       return context
 
+@method_decorator(login_required, name='dispatch')
 class SettingsDeleteView(DeleteView):
    model = Settings
    success_url = '/service/settings/' 
    
+@method_decorator(login_required, name='dispatch')
 class SettingsListView(ListView):
    model = Settings
 
+@method_decorator(login_required, name='dispatch')
 class SettingsDetailView(DetailView):
    model = Settings
 
+@method_decorator(login_required, name='dispatch')
 class SettingsUpdateView(UpdateView):
    model = Settings
    fields = ('mailing_time', 'periodicity', 'mailing_status', 'client')
@@ -80,7 +86,7 @@ class SettingsUpdateView(UpdateView):
       return context
    
 #--------------------------------------------------------------
-
+@method_decorator(login_required, name='dispatch')
 class Message_to_SendCreateView(CreateView):
    model = Message_to_Send
    fields = ('letter_subject', 'letter_body', 'settings')
@@ -92,16 +98,20 @@ class Message_to_SendCreateView(CreateView):
       context['objects'] = settings_objects
       return context
    
+@method_decorator(login_required, name='dispatch')
 class Message_to_SendDeleteView(DeleteView):
    model = Message_to_Send
    success_url = '/service/message/' 
 
+@method_decorator(login_required, name='dispatch')
 class Message_to_SendListView(ListView):
    model = Message_to_Send
    
+@method_decorator(login_required, name='dispatch')
 class Message_to_SendDetailView(DetailView):
    model = Message_to_Send
-   
+
+@method_decorator(login_required, name='dispatch')
 class Message_to_SendUpdateView(UpdateView):
    model = Message_to_Send
    fields = ('letter_subject', 'letter_body', 'settings')
@@ -114,7 +124,7 @@ class Message_to_SendUpdateView(UpdateView):
       return context
    
 #--------------------------------------------------------------
-
+@method_decorator(login_required, name='dispatch')
 class Mailing_LogsCreateView(CreateView):
    model = Mailing_Logs
    fields = ('date_and_time_of_last_attempt', 'attempt_status', 'mail_server_response', 'settings')
@@ -125,17 +135,21 @@ class Mailing_LogsCreateView(CreateView):
       settings_objects = Settings.objects.all()
       context['objects'] = settings_objects
       return context
-   
+
+@method_decorator(login_required, name='dispatch')
 class Mailing_LogsDeleteView(DeleteView):
    model = Mailing_Logs
    success_url = '/service/logs/' 
-   
+
+@method_decorator(login_required, name='dispatch')
 class Mailing_LogsListView(ListView):
    model = Mailing_Logs
-   
+
+@method_decorator(login_required, name='dispatch')
 class Mailing_LogsDetailView(DetailView):
    model = Mailing_Logs
-   
+
+@method_decorator(login_required, name='dispatch')
 class Mailing_LogsUpdateView(UpdateView):
    model = Mailing_Logs
    fields = ('date_and_time_of_last_attempt', 'attempt_status', 'mail_server_response', 'settings')
@@ -164,4 +178,4 @@ def login_view(request):
 def logout_view(request):
    logout(request)
    response = JsonResponse({"message": "Logout completed successfully"})
-   return response
+   return redirect('http://127.0.0.1:8000/accounts/login/')
