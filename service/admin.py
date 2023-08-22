@@ -1,9 +1,5 @@
 from django.contrib import admin
-from service.models import Customer_Service, Settings, Message_to_Send, Mailing_Logs
-
-@admin.register(Customer_Service)
-class Customer_ServiceAdmin(admin.ModelAdmin):
-   list_display = ('email', 'last_name', 'first_name', 'surname', 'comment')
+from service.models import Settings, Message_to_Send, Mailing_Logs
 
 @admin.register(Settings)
 class SettingsAdmin(admin.ModelAdmin):

@@ -28,10 +28,7 @@
         <label class="required" for="id_client">Клиент:</label>
         <div class="related-widget-wrapper" data-model-ref="Клиент сервиса">
             <select name="client" required="" id="id_client">
-                <option value="" selected>----------------------------------------------------</option>
-                {% for obj in objects %}
-                    <option value="{{ obj.pk }}">{{ obj }}</option>
-                {% endfor %}
+                <option value="{{ user.pk }}" selected>{{ user }}</option>
             </select>
         </div>
     </div>

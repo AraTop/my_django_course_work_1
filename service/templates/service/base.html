@@ -32,15 +32,15 @@
                 {% if user.is_authenticated %}
                   <li>
                     <details><summary class="text-white">Профиль</summary>
-                      <a  class="text-white" href="http://127.0.0.1:8000/service/">Открыть профиль</a>
+                      <a  class="text-white" href="http://127.0.0.1:8000/users/profile">Открыть профиль</a>
                       <br>
-                      <a class="text-white" href="http://127.0.0.1:8000/accounts/logout/">Выйти</a>
+                      <a class="text-white" href="http://127.0.0.1:8000/users/logout/">Выйти</a>
                     </details>
                   </li> 
                 {% else %}
                   <li>
                     <details><summary class="text-white">Здравствуй, гость</summary>
-                      <a  class="text-white" href="http://127.0.0.1:8000/accounts/login/">Войти</a>, <a class="text-white" href="http://127.0.0.1:8000/service/create">Зарегистрироватся</a>
+                      <a  class="text-white" href="http://127.0.0.1:8000/users/login/">Войти</a>, <a class="text-white" href="http://127.0.0.1:8000/service/create">Зарегистрироватся</a>
                     </details>
                   </li>   
                 {% endif %}
@@ -54,7 +54,7 @@
       </div>
       <div class="navbar navbar-dark bg-dark box-shadow">
         <div class="container d-flex justify-content-between">
-          <a href="http://127.0.0.1:8000/service" class="navbar-brand d-flex align-items-center">
+          <a href="http://127.0.0.1:8000/service/settings" class="navbar-brand d-flex align-items-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
             <strong>Album</strong>
           </a>
@@ -86,7 +86,7 @@
     <footer class="text-muted">
       <div class="container">
         <p class="float-right">
-          <a href="/">Back to home</a>
+          <a href="#">Back to home</a>
         </p>
         <p>&copy; 2023</p>
         <p>New to Bootstrap? <a href="../../">Visit the homepage</a> or read our <a href="../../getting-started/">getting started guide</a>.</p>

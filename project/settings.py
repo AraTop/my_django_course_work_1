@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     "service",
-
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -54,7 +54,6 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     ]
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.db' 
 SESSION_COOKIE_AGE = 604800
 
 ROOT_URLCONF = 'project.urls'
@@ -110,14 +109,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_REDIRECT_URL = '/service/'
-
-LOGIN_URL = '/accounts/login/' 
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'service.backends.EmailBackend'
-]
+LOGIN_REDIRECT_URL = '/service/settings'
+LOGIN_URL = '/users/login/'
+LOGOUT_REDIRECT_URL = '/users/login'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -144,4 +138,4 @@ STATICFILES_DIRS = (
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-AUTH_USER_MODEL = 'service.Customer_Service'
+AUTH_USER_MODEL = 'users.User'
