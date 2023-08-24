@@ -36,13 +36,19 @@ class MailingService:
 
    def is_time_to_send(self, settings, current_time):
       """ Проверка, что текущее время соответствует времени рассылки и другим условиям """
+
       if settings.mailing_time > current_time:
+         self.waiting_for_the_right_time(settings)
          return True
       
       elif current_time > settings.mailing_time:
+         self.waiting_for_the_right_time(settings)
          return True
       
       return False
+
+   def waiting_for_the_right_time(self, settings):
+      pass
 
    def get_last_sent_time(self, settings):
       try:
