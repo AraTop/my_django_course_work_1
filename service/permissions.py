@@ -27,3 +27,12 @@ class ModeratorPermissionsMixin(AuthorPermissionsMixin):
             return True
 
         return self.request.user.groups.filter(name='moderator').exists()
+    
+class ModeratorMessagePermissionsMixin(AuthorMessagePermissionsMixin):
+    def has_permissions(self):
+        is_author = super().has_permissions()
+
+        if is_author:
+            return True
+
+        return self.request.user.groups.filter(name='moderator').exists()

@@ -4,6 +4,7 @@ from users.forms import UserForm, UserProfileForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
+
 class RegisterView(CreateView):
    model = User
    form_class = UserForm

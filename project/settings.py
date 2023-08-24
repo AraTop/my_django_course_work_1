@@ -54,7 +54,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     ]
 
-SESSION_COOKIE_AGE = 604800
+SESSION_COOKIE_AGE = 104800
 
 ROOT_URLCONF = 'project.urls'
 
@@ -139,3 +139,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'users.User'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.rambler.ru'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True 
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = 'test_django_project@rambler.ru'
+EMAIL_HOST_PASSWORD = 'Ara321ara' 
