@@ -1,7 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+from django.utils import timezone
+from users.models import User
 from .models import Settings, Message_to_Send, Mailing_Logs
 from django.core.mail import send_mail
-
+from project import settings as setting
 class MailingService:
 
    def process_dispatch(self, settings_id):
@@ -22,8 +24,8 @@ class MailingService:
 
                if message:
                   for client in clients:
-                     print(client)
-                     self.send_message(message, client, settings)
+                     user = User.objects.get(id=client)
+                     self.send_message(message, user, settings)
                else:
                   return 'No message'
 
@@ -60,20 +62,23 @@ class MailingService:
 
       return None
 
-   def send_message(self, message, client, settings):
+   def send_message(self, message, user, settings):
+      e = None 
+
       try:
          send_mail(
          subject=message.letter_subject,
          message=message.letter_body,
-         from_email=settings.EMAIL_HOST_USER,
-         recipient_list=[client.email]
+         from_email=setting.EMAIL_HOST_USER,
+         recipient_list=[user.email]
          )
 
-      except Exception as e:
-            return str(e)
+      except Exception as error:
+         e = error
+         return e
 
       finally:
-         Mailing_Logs.objects.create(date_and_time_of_last_attempt=datetime.now(),
+         Mailing_Logs.objects.create(date_and_time_of_last_attempt=timezone.now(),
          attempt_status="Success" if not e else "Error",
          mail_server_response=str(e) if e else "Success",
          settings=settings)

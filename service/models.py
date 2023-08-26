@@ -33,7 +33,7 @@ class Message_to_Send(models.Model):
 class Mailing_Logs(models.Model):
     date_and_time_of_last_attempt = models.DateTimeField(verbose_name='Дата и время последней попытки')
     attempt_status = models.CharField(max_length=100, verbose_name='Статус попытки')
-    mail_server_response = models.CharField(max_length=100, verbose_name='Ответ почтового сервера')
+    mail_server_response = models.TextField(max_length=100, verbose_name='Ответ почтового сервера')
     settings = models.ForeignKey(Settings, on_delete=models.CASCADE, related_name='mailing_logs')
    
     def __str__(self):

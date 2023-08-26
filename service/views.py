@@ -85,7 +85,7 @@ class Message_to_SendUpdateView(ModeratorMessagePermissionsMixin, UpdateView):
    
 #--------------------------------------------------------------
 @method_decorator(login_required, name='dispatch')
-class Mailing_LogsCreateView(CreateView):
+class Mailing_LogsCreateView(ModeratorMessagePermissionsMixin, CreateView):
    model = Mailing_Logs
    fields = ('date_and_time_of_last_attempt', 'attempt_status', 'mail_server_response', 'settings')
    success_url = '/service/logs/'
@@ -97,7 +97,7 @@ class Mailing_LogsCreateView(CreateView):
       return context
 
 @method_decorator(login_required, name='dispatch')
-class Mailing_LogsDeleteView(DeleteView):
+class Mailing_LogsDeleteView(ModeratorMessagePermissionsMixin, DeleteView):
    model = Mailing_Logs
    success_url = '/service/logs/' 
 
@@ -106,11 +106,11 @@ class Mailing_LogsListView(ListView):
    model = Mailing_Logs
 
 @method_decorator(login_required, name='dispatch')
-class Mailing_LogsDetailView(DetailView):
+class Mailing_LogsDetailView(ModeratorMessagePermissionsMixin, DetailView):
    model = Mailing_Logs
 
 @method_decorator(login_required, name='dispatch')
-class Mailing_LogsUpdateView(UpdateView):
+class Mailing_LogsUpdateView(ModeratorMessagePermissionsMixin, UpdateView):
    model = Mailing_Logs
    fields = ('date_and_time_of_last_attempt', 'attempt_status', 'mail_server_response', 'settings')
    success_url = '/service/logs/'
@@ -131,6 +131,6 @@ class CreateDispatchView(View):
          settings_id = settings.id
          mailing_service = MailingService()
          mailing_service.process_dispatch(settings_id)
-         return JsonResponse({"message": "Dispatch processed successfully"})
+         return JsonResponse({"message": "Dispatch processed successfully"}),
       else:
          return JsonResponse({"message": "Settings not found for this user"})
