@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from service.models import Settings, Message_to_Send, Mailing_Logs 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
@@ -71,6 +72,19 @@ class Message_to_SendListView(ListView):
 class Message_to_SendDetailView(ModeratorMessagePermissionsMixin, DetailView):
    model = Message_to_Send
 
+   def get_context_data(self, **kwargs):
+      context = super().get_context_data(**kwargs)
+      context['object'] = self.object
+      settings = self.object.settings  # Получаем связанные настройки
+
+      if settings.mailing_status == 'запущена':
+         context['launched'] = settings.mailing_status
+      elif settings.mailing_status == 'создана':
+         context['can_start'] = settings.mailing_status 
+      else:
+         context['not_start'] = settings.mailing_status 
+      return context
+
 @method_decorator(login_required, name='dispatch')
 class Message_to_SendUpdateView(ModeratorMessagePermissionsMixin, UpdateView):
    model = Message_to_Send
@@ -131,6 +145,6 @@ class CreateDispatchView(View):
          settings_id = settings.id
          mailing_service = MailingService()
          mailing_service.constant_sending_cycle(settings_id)
-         return JsonResponse({"message": "Dispatch processed successfully"}),
+         return redirect('/service/message/')
       else:
          return JsonResponse({"message": "Settings not found for this user"})

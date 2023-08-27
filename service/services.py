@@ -59,18 +59,19 @@ class MailingService:
 
    def constant_sending_cycle(self, settings):
       while True:
-         if self.stop_send_message(settings):
+         setting = Settings.objects.get(pk=settings)
+         if self.stop_send_message():
             break
          else:
             self.process_dispatch(settings)
 
-            if settings.periodicity == "раз в день":
+            if setting.periodicity == "раз в день":
                wait_interval = timedelta(days=1)
 
-            elif settings.periodicity == "раз в неделю":
+            elif setting.periodicity == "раз в неделю":
                wait_interval = timedelta(weeks=1)
 
-            elif settings.periodicity == "раз в месяц":
+            elif setting.periodicity == "раз в месяц":
                wait_interval = self.calculate_next_monthly_interval()
 
             time.sleep(wait_interval.total_seconds())
