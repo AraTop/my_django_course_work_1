@@ -1,9 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+import time
 from django.utils import timezone
 from users.models import User
 from .models import Settings, Message_to_Send, Mailing_Logs
 from django.core.mail import send_mail
 from project import settings as setting
+
 class MailingService:
 
    def process_dispatch(self, settings_id):
@@ -11,7 +13,7 @@ class MailingService:
       try:
          settings = Settings.objects.get(pk=settings_id)
          current_time = datetime.now().time()
-   
+
          if self.is_time_to_send(settings, current_time):
             if settings.mailing_status == "создана":
                settings.mailing_status = "запущена"
@@ -31,6 +33,8 @@ class MailingService:
 
             if settings.mailing_status == "завершена":
                pass
+         else:
+            return 'Настройка: is_time_to_send не подтвердилась'
 
       except Settings.DoesNotExist:
          # Настройки не найдены
@@ -40,39 +44,81 @@ class MailingService:
       """ Проверка, что текущее время соответствует времени рассылки и другим условиям """
 
       if settings.mailing_time > current_time:
-         self.waiting_for_the_right_time(settings)
          return True
       
       elif current_time > settings.mailing_time:
-         self.waiting_for_the_right_time(settings)
          return True
       
       return False
 
+   def stop_send_message(self, user_stoping):
+      if user_stoping == 'Stop':
+         return True
+      else:
+         return False
+
+   def constant_sending_cycle(self, settings):
+      while True:
+         if self.stop_send_message(settings):
+            break
+         else:
+            self.process_dispatch(settings)
+
+            if settings.periodicity == "раз в день":
+               wait_interval = timedelta(days=1)
+
+            elif settings.periodicity == "раз в неделю":
+               wait_interval = timedelta(weeks=1)
+
+            elif settings.periodicity == "раз в месяц":
+               wait_interval = self.calculate_next_monthly_interval()
+
+            time.sleep(wait_interval.total_seconds())
+
    def waiting_for_the_right_time(self, settings):
-      pass
+      """Ждем время рассылки в пределах одного дня"""
+      now = timezone.now()
+        
+      # Определите время, в которое должна произойти следующая рассылка
+      next_mailing_time = settings.mailing_time
+      print(settings.mailing_time)
+        
+      # Вычислите, сколько времени осталось до следующей рассылки
+      time_to_wait = (next_mailing_time - now).total_seconds()
+      print(time_to_wait)
+      if time_to_wait > 0:
+         time.sleep(time_to_wait)
+   
+      return True 
 
-   def get_last_sent_time(self, settings):
-      try:
-         last_log = Mailing_Logs.objects.filter(settings=settings, attempt_status="Success").order_by('date_and_time_of_last_attempt').first()
-         if last_log:
-            return last_log.date_and_time_of_last_attempt
-      except Mailing_Logs.DoesNotExist:
-         pass
+   def calculate_next_monthly_interval(self):
+      """Ждем время рассылки в пределах одного месяца"""
+      # Определяем интервал времени до следующей рассылки
+      now = timezone.now()
+      next_month = now.month + 1
+      next_year = now.year
 
-      return None
+      if next_month > 12:
+         next_month = 1
+         next_year += 1
+
+      next_month_start = now.replace(year=next_year, month=next_month, day=1, hour=0, minute=0, second=0, microsecond=0)
+      interval = next_month_start - now
+      return interval            
 
    def send_message(self, message, user, settings):
       e = None 
 
       try:
-         send_mail(
-         subject=message.letter_subject,
-         message=message.letter_body,
-         from_email=setting.EMAIL_HOST_USER,
-         recipient_list=[user.email]
-         )
+            self.waiting_for_the_right_time(settings)
 
+            send_mail(
+            subject=message.letter_subject,
+            message=message.letter_body,
+            from_email=setting.EMAIL_HOST_USER,
+            recipient_list=[user.email]
+            )
+         
       except Exception as error:
          e = error
          return e

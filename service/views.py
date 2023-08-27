@@ -130,7 +130,7 @@ class CreateDispatchView(View):
          settings = Settings.objects.filter(client_id=user_id).first()
          settings_id = settings.id
          mailing_service = MailingService()
-         mailing_service.process_dispatch(settings_id)
+         mailing_service.constant_sending_cycle(settings_id)
          return JsonResponse({"message": "Dispatch processed successfully"}),
       else:
          return JsonResponse({"message": "Settings not found for this user"})
