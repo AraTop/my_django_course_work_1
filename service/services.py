@@ -57,13 +57,13 @@ class MailingService:
       else:
          return False
 
-   def constant_sending_cycle(self, settings):
+   def constant_sending_cycle(self, settings_id, user_stoping):
       while True:
-         setting = Settings.objects.get(pk=settings)
-         if self.stop_send_message():
+         setting = Settings.objects.get(pk=settings_id)
+         if self.stop_send_message(user_stoping):
             break
          else:
-            self.process_dispatch(settings)
+            self.process_dispatch(settings_id)
 
             if setting.periodicity == "раз в день":
                wait_interval = timedelta(days=1)
@@ -82,11 +82,9 @@ class MailingService:
         
       # Определите время, в которое должна произойти следующая рассылка
       next_mailing_time = settings.mailing_time
-      print(settings.mailing_time)
         
       # Вычислите, сколько времени осталось до следующей рассылки
       time_to_wait = (next_mailing_time - now).total_seconds()
-      print(time_to_wait)
       if time_to_wait > 0:
          time.sleep(time_to_wait)
    
@@ -111,9 +109,9 @@ class MailingService:
       e = None 
 
       try:
-            self.waiting_for_the_right_time(settings)
+         self.waiting_for_the_right_time(settings)
 
-            send_mail(
+         send_mail(
             subject=message.letter_subject,
             message=message.letter_body,
             from_email=setting.EMAIL_HOST_USER,
