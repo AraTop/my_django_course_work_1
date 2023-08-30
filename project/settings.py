@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     "service",
     "users",
+    "main",
 ]
 
 MIDDLEWARE = [
@@ -54,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     ]
 
-SESSION_COOKIE_AGE = 104800
+SESSION_COOKIE_AGE = 54800
 
 ROOT_URLCONF = 'project.urls'
 
@@ -109,16 +110,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_REDIRECT_URL = '/service/settings'
+LOGIN_REDIRECT_URL = '/service/settings/'
 LOGIN_URL = '/users/login/'
-LOGOUT_REDIRECT_URL = '/users/login'
+LOGOUT_REDIRECT_URL = '/users/register/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = 'ru-ru'
-
-TIME_ZONE = 'UTC'
 
 USE_I18N = True
 

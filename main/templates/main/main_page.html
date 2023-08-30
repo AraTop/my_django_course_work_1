@@ -1,0 +1,44 @@
+{% extends 'service/base.html' %}     
+{% block content %}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <h1>--Информация--</h1>
+                <div class="card-body">
+                  <p class="card-text">Количество рассылок всего: {{object_list_count}}</p>
+                  <p class="card-text">Количество уникальных клиентов для рассылок: {{unique_clients_count}}</p>
+                  <p class="card-text">Количество активных рассылок: {{active_newsletters_count}}</p>
+                </div>
+              </div>
+              <style>
+                .btn{
+                   float: left;
+                }
+                .card-body  {
+                   
+                   height:230px;
+                }
+             </style>
+            </div>
+            {% for object in publications %}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <h1>Блог:</h1>
+                <div class="card-body">
+                  <p class="card-text">Заголовок: {{object.header}}</p>
+                  <p class="card-text">Содержимое статьи: {{object.content}}</p>
+                  <p class="card-text">Дата публикации: {{object.publication_date}}</p>
+                  <p class="card-text">Количество просмотров: {{object.views}}</p>
+                </div>
+              </div>
+              <style>
+                .btn{
+                   float: left;
+                }
+                .card-body  {
+                   
+                   height:230px;
+                }
+             </style>
+            </div>
+            {% endfor %}
+{% endblock %}

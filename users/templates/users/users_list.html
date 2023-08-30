@@ -1,0 +1,31 @@
+{% extends 'service/base.html' %}     
+{% block content %}
+            {% for object in object_list %}
+            <div class="col-md-4">
+              <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                  <p class="card-text">Фамилия: {{object.last_name}}</p>
+                  <p class="card-text">email: {{object.email}}</p>
+                  <br>
+                  <br>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <button onclick="window.location.href='/users/{{object.pk}}'" type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                      <button onclick="window.location.href='/users/profile/'" type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                      <button onclick="window.location.href='/users/delete/'" type="button" class="btn btn-danger">Delete</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <style>
+                .btn{
+                   float: left;
+                }
+                .card-body  {
+                   
+                   height:230px;
+                }
+             </style>
+            </div>
+            {% endfor %}
+{% endblock %}

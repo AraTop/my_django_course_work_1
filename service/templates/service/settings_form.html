@@ -3,35 +3,69 @@
 {% block content %}
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="form-group has-success">
-        <label class="control-label" for="inputSuccess1">Время рассылки</label>
-        <input type="time" name="mailing_time" class="form-control" id="inputSuccess1">
-    </div>
-
-    <label class="control-label" for="periodicitySelect">Выберите Периодичность</label>
-    <select id="periodicitySelect" name="periodicity">
-        <option>раз в день</option>
-        <option>раз в неделю</option>
-        <option>раз в месяц</option>
-    </select>
-
-    <br>
-
-    <label class="control-label" for="statusSelect">Cтатус рассылки</label>
-    <select id="statusSelect" name="mailing_status">
-        <option>завершена</option>
-        <option>создана</option>
-        <option>запущена</option>
-    </select>
-
-    <div class="form-group has-success">
-        <label class="required" for="id_client">Клиент:</label>
-        <div class="related-widget-wrapper" data-model-ref="Клиент сервиса">
-            <select name="client" required="" id="id_client">
-                <option value="{{ user.pk }}" selected>{{ user }}</option>
-            </select>
+    {% if is_moderator %}
+        <div class="form-group has-success">
+            <label class="control-label" for="inputSuccess1">Время рассылки</label>
+            <input type="time" name="mailing_time" value='{{ object.mailing_time }}' class="form-control" id="inputSuccess1" readonly>
         </div>
-    </div>
+
+        <label class="control-label" for="periodicitySelect">Выберите Периодичность</label>
+        <input type="name" name="periodicity" value='{{ object.periodicity }}' class="form-control" id="inputSuccess1" readonly>
+
+        <br>
+
+        <label class="control-label" for="statusSelect">Cтатус рассылки</label>
+        <select id="periodicitySelect" name="mailing_status">
+            <option value="завершена" {% if object.mailing_status == "завершена" %}selected{% endif %}>завершена</option>
+            <option value="создана" {% if object.mailing_status == "создана" %}selected{% endif %}>создана</option>
+            <option value="запущена" {% if object.mailing_status == "запущена" %}selected{% endif %}>запущена</option>
+        </select>
+
+        <div class="form-group has-success">
+            <label class="required" for="id_client">Клиент:</label>
+            <div class="related-widget-wrapper" data-model-ref="Клиент сервиса">
+                <select name="client" required="" id="id_client">
+                    {% for user_option in user_options %}
+                        {% if user_option.pk == settings.client.pk %}
+                            <option value="{{ user_option.pk }}" selected>{{ user_option }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+    {% else %}
+        <div class="form-group has-success">
+            <label class="control-label" for="inputSuccess1">Время рассылки</label>
+            <input type="time" name="mailing_time" value='{{ object.mailing_time }}' class="form-control" id="inputSuccess1">
+        </div>
+
+        <label class="control-label" for="periodicitySelect">Выберите Периодичность</label>
+        <select id="periodicitySelect" name="periodicity">
+            <option value="раз в день" {% if object.periodicity == "раз в день" %}selected{% endif %}>раз в день</option>
+            <option value="раз в неделю" {% if object.periodicity == "раз в неделю" %}selected{% endif %}>раз в неделю</option>
+            <option value="раз в месяц" {% if object.periodicity == "раз в месяц" %}selected{% endif %}>раз в месяц</option>
+        </select>
+        
+
+        <br>
+
+        <label class="control-label" for="statusSelect">Cтатус рассылки</label>
+        <select id="periodicitySelect" name="mailing_status">
+            <option value="завершена" {% if object.mailing_status == "завершена" %}selected{% endif %}>завершена</option>
+            <option value="создана" {% if object.mailing_status == "создана" %}selected{% endif %}>создана</option>
+            <option value="запущена" {% if object.mailing_status == "запущена" %}selected{% endif %}>запущена</option>
+        </select>
+
+        <div class="form-group has-success">
+            <label class="required" for="id_client">Клиент:</label>
+            <div class="related-widget-wrapper" data-model-ref="Клиент сервиса">
+                <select name="client" required="" id="id_client">
+                    <option value="{{ user.pk }}" selected>{{ user }}</option>
+                </select>
+            </div>
+        </div>
+    {% endif %}
 
     <div class="form-group has-error">
         <label class="control-label" for="inputError1"></label>

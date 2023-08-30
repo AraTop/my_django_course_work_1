@@ -42,8 +42,18 @@ class SettingsUpdateView(ModeratorPermissionsMixin, UpdateView):
 
    def get_context_data(self, **kwargs):
       context = super().get_context_data(**kwargs)
-      settings_objects = User.objects.all()
+      settings_objects = Settings.objects.all()
       context['objects'] = settings_objects
+      context['user_options'] = User.objects.all()
+      is_moder = self.request.user.groups.filter(name='moderator').exists()
+      is_owner = self.get_object().client  == self.request.user
+      while True:
+         if is_owner:
+            break
+         
+         elif is_moder:
+            context['is_moderator'] = is_moder
+            break
       return context
    
 #--------------------------------------------------------------
@@ -69,7 +79,7 @@ class Message_to_SendListView(ListView):
    model = Message_to_Send
    
 @method_decorator(login_required, name='dispatch')
-class Message_to_SendDetailView(ModeratorMessagePermissionsMixin, DetailView):
+class Message_to_SendDetailView(AuthorMessagePermissionsMixin, DetailView):
    model = Message_to_Send
 
    def get_context_data(self, **kwargs):
@@ -86,7 +96,7 @@ class Message_to_SendDetailView(ModeratorMessagePermissionsMixin, DetailView):
       return context
 
 @method_decorator(login_required, name='dispatch')
-class Message_to_SendUpdateView(ModeratorMessagePermissionsMixin, UpdateView):
+class Message_to_SendUpdateView(AuthorMessagePermissionsMixin, UpdateView):
    model = Message_to_Send
    fields = ('letter_subject', 'letter_body', 'settings')
    success_url = '/service/message/'
