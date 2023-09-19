@@ -10,6 +10,8 @@ from project import settings
 from django.shortcuts import redirect
 from .permissions import  ModeratorPermissionsMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.views import LoginView as BaseLoginView
+from django.contrib.auth.views import LogoutView as BaseLogoutView
 
 def is_in_moderator_group(user):
    return user.is_authenticated and user.groups.filter(name='moderator').exists()
@@ -46,7 +48,7 @@ class VerifyEmail(TemplateView):
          request.user.save()
          return redirect('/') 
      else:
-         return 
+         return redirect('/error-page/')
      
 @method_decorator(login_required, name='dispatch')  
 class ProfileView(UpdateView):
@@ -70,3 +72,9 @@ class UsersListView(UserPassesTestMixin, ListView):
 class UserDetailView(ModeratorPermissionsMixin, DetailView):
    model = User
    template_name = 'users/user_detail.html'
+
+class LoginView(BaseLoginView):
+   template_name = 'users/login.html'
+
+class LogoutView(BaseLogoutView):
+   pass
