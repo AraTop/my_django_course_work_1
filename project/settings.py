@@ -148,3 +148,7 @@ EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
 EMAIL_HOST_USER = 'test_django_project@rambler.ru'
 EMAIL_HOST_PASSWORD = 'Ara321ara' 
+
+STATUS_CREATED = 'создана'
+STATUS_STARTED = 'запущена'
+STATUS_COMPLETED = 'завершена'
