@@ -5,9 +5,9 @@ from django.utils import timezone
 from django.db.models import Q
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
+from celery import shared_task
 
+@shared_task
 def send_mailing_task(mailing):
    settings_objects = Settings.objects.all()
    recipients = settings_objects.values_list('client', flat=True)
@@ -23,27 +23,27 @@ def send_mailing_task(mailing):
             subject=subject,
             message=message,
             from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[recipient_email],
-            fail_silently=False,)
+            recipient_list=[recipient_email])
          
          log = Mailing_Logs(
-            mailing=mailing,
-            recipient=recipient,
-            status=Mailing_Logs.STATUS_SUCCESSFUL,)
+            date_and_time_of_last_attempt=timezone.now(),
+            attempt_status="Success",
+            mail_server_response="Success",
+            settings=Settings.object.filter(client_id=recipient.pk))
          log.save()
 
       except Exception as e:
          log = Mailing_Logs(
-            mailing=mailing,
-            recipient=recipient,
-            status=Mailing_Logs.STATUS_FAILED, 
-            error_message=str(e),)
-         
+            date_and_time_of_last_attempt=timezone.now(),
+            attempt_status="Error",
+            mail_server_response=e,
+            settings=Settings.object.filter(client_id=recipient.pk))
          log.save()
 
    mailing.save()
 
-def start_scheduled_mailings():
+@shared_task
+def start_mailings():
    """
    Функция для запуска отложенных рассылок.
    Эта функция будет вызываться периодически по расписанию и отправлять рассылки,
@@ -54,7 +54,7 @@ def start_scheduled_mailings():
    current_time = timezone.now()
    # Фильтруем объекты Mailing, чтобы найти те, которые имеют статус Mailing.STATUS_CREATED
    # или Mailing.STATUS_STARTED и у которых время рассылки меньше или равно текущему времени.
-   settings_objects = Settings.objects.filter(Q(mailing_status="создана") | Q(mailing_status="запущена"), mailing_time__lte=current_time)
+   settings_objects = Settings.objects.filter(Q(mailing_status="создана") | Q(mailing_status="запущена"), mailing_time_date__lte=current_time)
 
    scheduled_mailings = Message_to_Send.objects.filter(settings__in=settings_objects)
 
@@ -63,24 +63,18 @@ def start_scheduled_mailings():
       setting.mailing_status = "запущена"
       print(setting.mailing_status)
       setting.save()
-      send_mailing_task(mailing)
+      send_mailing_task.delay(mailing)
 
 
       if setting.periodicity == "раз в день":
-         setting.mailing_time += timedelta(days=1)
+         setting.mailing_time_date += timedelta(days=1)
       elif setting.periodicity == "раз в неделю":
-         setting.mailing_time += timedelta(weeks=1)
+         setting.mailing_time_date += timedelta(weeks=1)
       elif setting.periodicity == "раз в месяц":
-         setting.mailing_time += relativedelta(months=1)
+         setting.mailing_time_date += relativedelta(months=1)
 
-      if setting.mailing_time.day > 28:
-         setting.mailing_time = mailing.mailing_time.replace(day=1)
-         setting.mailing_time += relativedelta(day=31)
+      if setting.mailing_time_date.day > 28:
+         setting.mailing_time_date = mailing.mailing_time_date.replace(day=1)
+         setting.mailing_time_date += relativedelta(day=31)
 
       setting.save()
-
-
-scheduler = BackgroundScheduler()
-scheduler.add_job(start_scheduled_mailings, CronTrigger(second='0'))
-scheduler.start()
-print("Scheduler started")

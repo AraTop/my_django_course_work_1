@@ -3,7 +3,7 @@ from service.models import Settings, Message_to_Send, Mailing_Logs
 
 @admin.register(Settings)
 class SettingsAdmin(admin.ModelAdmin):
-   list_display = ('mailing_time', 'periodicity', 'mailing_status', 'client')
+   list_display = ('mailing_time_date', 'periodicity', 'mailing_status', 'client')
 
 @admin.register(Message_to_Send)
 class Message_to_SendAdmin(admin.ModelAdmin):

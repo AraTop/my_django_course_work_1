@@ -1,18 +1,14 @@
-from django.shortcuts import redirect
 from service.models import Settings, Message_to_Send, Mailing_Logs 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from service.permissions import AuthorMessagePermissionsMixin, AuthorPermissionsMixin, ModeratorMessagePermissionsMixin, ModeratorPermissionsMixin
 from users.models import User
-from django.http import JsonResponse
-from django.views import View
-from .services import MailingService
 
 @method_decorator(login_required, name='dispatch')
 class SettingsCreateView(CreateView):
    model = Settings
-   fields = ('mailing_time', 'periodicity', 'mailing_status', 'client')
+   fields = ('mailing_time_date', 'periodicity', 'mailing_status', 'client')
    success_url = '/service/settings/'
 
    def get_context_data(self, **kwargs):
@@ -37,7 +33,7 @@ class SettingsDetailView(ModeratorPermissionsMixin, DetailView):
 @method_decorator(login_required, name='dispatch')
 class SettingsUpdateView(ModeratorPermissionsMixin, UpdateView):
    model = Settings
-   fields = ('mailing_time', 'periodicity', 'mailing_status', 'client')
+   fields = ('mailing_time_date', 'periodicity', 'mailing_status', 'client')
    success_url = '/service/settings/'
 
    def get_context_data(self, **kwargs):
@@ -144,17 +140,3 @@ class Mailing_LogsUpdateView(ModeratorMessagePermissionsMixin, UpdateView):
       settings_objects = Settings.objects.all()
       context['objects'] = settings_objects
       return context
-#----------------------------------------------------------------------------------------------
-@method_decorator(login_required, name='dispatch')
-class CreateDispatchView(View):
-
-   def get(self, request, *args, **kwargs):
-      user_id = request.user.id
-      if user_id:
-         settings = Settings.objects.filter(client_id=user_id).first()
-         settings_id = settings.id
-         mailing_service = MailingService()
-         mailing_service.constant_sending_cycle(settings_id, None)
-         return redirect('/service/message/')
-      else:
-         return JsonResponse({"message": "Settings not found for this user"})

@@ -6,7 +6,7 @@
     {% if is_moderator %}
         <div class="form-group has-success">
             <label class="control-label" for="inputSuccess1">Время рассылки</label>
-            <input type="time" name="mailing_time" value='{{ object.mailing_time }}' class="form-control" id="inputSuccess1" readonly>
+            <input type="time" name="mailing_time_date" value='{{ object.mailing_time_date }}' class="form-control" id="inputSuccess1" readonly>
         </div>
 
         <label class="control-label" for="periodicitySelect">Выберите Периодичность</label>
@@ -37,7 +37,7 @@
     {% else %}
         <div class="form-group has-success">
             <label class="control-label" for="inputSuccess1">Время рассылки</label>
-            <input type="time" name="mailing_time" value='{{ object.mailing_time }}' class="form-control" id="inputSuccess1">
+            <input type="time" name="mailing_time_date" value='{{ object.mailing_time_date }}' class="form-control" id="inputSuccess1">
         </div>
 
         <label class="control-label" for="periodicitySelect">Выберите Периодичность</label>

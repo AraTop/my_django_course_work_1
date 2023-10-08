@@ -5,3 +5,5 @@ schedule
 Pillow
 apscheduler
 python-dateutil
+celery
+redis

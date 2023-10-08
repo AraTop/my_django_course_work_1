@@ -19,5 +19,4 @@ urlpatterns = [
    path("logs/delete/<int:pk>/", views.Mailing_LogsDeleteView.as_view()),
    path("logs/update/<int:pk>/", views.Mailing_LogsUpdateView.as_view()),
    path("logs/<int:pk>/", views.Mailing_LogsDetailView.as_view(), name='logs'),
-   path('create_dispatch/', views.CreateDispatchView.as_view(), name='create_dispatch'),
 ]

@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
-from datetime import timedelta
+from celery.schedules import crontab
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -152,3 +152,13 @@ EMAIL_HOST_PASSWORD = 'Ara321ara'
 STATUS_CREATED = 'создана'
 STATUS_STARTED = 'запущена'
 STATUS_COMPLETED = 'завершена'
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'    
+
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'service.tasks.start_mailings',  # Путь к задаче
+        'schedule': crontab(minute='*/1'),
+    },
+}
