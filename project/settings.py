@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "service",
     "users",
     "main",
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -148,10 +149,6 @@ EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
 EMAIL_HOST_USER = 'test_django_project@rambler.ru'
 EMAIL_HOST_PASSWORD = 'Ara321ara' 
-
-STATUS_CREATED = 'создана'
-STATUS_STARTED = 'запущена'
-STATUS_COMPLETED = 'завершена'
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'    
