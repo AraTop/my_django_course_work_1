@@ -13,6 +13,15 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 
+
+class LoginView(BaseLoginView):
+   template_name = 'users/login.html'
+
+
+class LogoutView(BaseLogoutView):
+   pass
+
+
 def is_in_moderator_group(user):
    return user.is_authenticated and user.groups.filter(name='moderator').exists()
 
@@ -72,9 +81,3 @@ class UsersListView(UserPassesTestMixin, ListView):
 class UserDetailView(ModeratorPermissionsMixin, DetailView):
    model = User
    template_name = 'users/user_detail.html'
-
-class LoginView(BaseLoginView):
-   template_name = 'users/login.html'
-
-class LogoutView(BaseLogoutView):
-   pass
